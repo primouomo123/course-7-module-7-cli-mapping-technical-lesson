@@ -32,4 +32,7 @@ class User:
     def get_task_by_title(self, title):
         # TODO: Return the task matching the title if it exists
         # TODO: Return None if not found
-        pass
+        for task in self.tasks:
+            if task.title == title:
+                return task
+        return None
