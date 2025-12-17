@@ -53,6 +53,8 @@ import argparse
 # TODO: Import Task and User classes from models module
 
 # TODO: Initialize an empty dictionary to store users
+from models import Task, User
+users = {}
 
 
 # TODO: Define function to handle adding a task
@@ -61,7 +63,10 @@ def add_task(args):
     # - Get or create a User based on args.user
     # - Create a Task using args.title
     # - Add the task to the user's task list
-    pass
+    user = users.get(args.user) or User(args.user)
+    users[args.user] = user
+    task = Task(args.title)
+    user.add_task(task)
 
 
 # TODO: Define function to handle completing a task
@@ -70,21 +75,29 @@ def complete_task(args):
     # - Look up the user in the dictionary
     # - Find the task by title
     # - Mark the task as complete
-    pass
+    user = users.get(args.user)
+    if user:
+        for task in user.tasks:
+            if task.title == args.title:
+                task.complete()
+                return
+        print("❌ Task not found.")
+    else:
+        print("❌ User not found.")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Task Manager CLI Tool")
+    parser = argparse.ArgumentParser(description="User Task Manager CLI")
     subparsers = parser.add_subparsers()
 
     # Subparser for add-task
-    add_parser = subparsers.add_parser("add-task", help="Add a task for a user")
+    add_parser = subparsers.add_parser("add-task", help="Add a task to a user")
     add_parser.add_argument("user")
     add_parser.add_argument("title")
     add_parser.set_defaults(func=add_task)
 
     # Subparser for complete-task
-    complete_parser = subparsers.add_parser("complete-task", help="Mark a user's task as complete")
+    complete_parser = subparsers.add_parser("complete-task", help="Mark a task complete")
     complete_parser.add_argument("user")
     complete_parser.add_argument("title")
     complete_parser.set_defaults(func=complete_task)
